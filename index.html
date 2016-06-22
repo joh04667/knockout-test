@@ -28,7 +28,10 @@
    <tbody data-bind="foreach: itemsInCart">
     <tr>
      <td data-bind="text: name"></td>
-     <td>$<span data-bind="text: price"></span></td>
+     <td>
+        $<span data-bind="text: price"></span>
+        <button data-bind="click: $parent.removeItem">Remove Item</button>
+     </td>
     </tr>
    </tbody>
   </table>
