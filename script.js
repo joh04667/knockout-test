@@ -10,8 +10,8 @@ validateCurrency = function(amount) {
   return regex.test(amount) && amount > 0;
 };
 
-alphebatizeArray = function(array, key) {
-	
+capitalizeFirst = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 var viewModel = {
@@ -20,7 +20,7 @@ var viewModel = {
 	newItemQuantity: ko.observable(1),
 	addNewItem: function () {
 		var newItem = {
-			name: this.newItemName(),
+			name: capitalizeFirst(this.newItemName()),
 			price: this.newItemPrice(),
 			quantity: ko.observable(this.newItemQuantity())
 		};
