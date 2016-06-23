@@ -14,9 +14,18 @@ capitalizeFirst = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+// custom binding to display money in human readable format (USD)
+ko.bindingHandlers.currency = {
+	update: function(element, valueAccessor, allBindings) {
+		var value = ko.unwrap(valueAccessor());
+		value = typeof(value) === 'string' ? parseFloat(value) : value;
+		var format = value.toLocaleString('en-US',{style: 'currency', currency: 'USD'});
+		$(element).text(format);
+	}
+};
 
-ko.extenders.money = function(target) {
 // write input as number instead of string
+ko.extenders.moneyToNumber = function(target) {
 	var result = ko.computed({
 		read: function() {
 			return target();
@@ -25,38 +34,21 @@ ko.extenders.money = function(target) {
 			return target(parseFloat(val));
 		}
 	});
-
-// utility method to display money value in human-readable format
-	result.formatted = function() {
-		return target().toLocaleString('en-US',{style: 'currency', currency: 'USD'});
-	};
-
-	result.hasError = ko.observable();
-
-	function validate(val) {
-		result.hasError = !validateCurrency(val);
-	}
-
-	validate(target());
-	target.subscribe(validate);
-
 	return result;
 };
 
 
 var viewModel = {
 	newItemName: ko.observable(),
-	newItemPrice: ko.observable(0).extend({money: true}),
+	newItemPrice: ko.observable(0).extend({moneyToNumber: true}),
 	newItemQuantity: ko.observable(1),
+
 	addNewItem: function () {
 		var newItem = {
 			name: capitalizeFirst(this.newItemName()),
 			price: this.newItemPrice(),
-			priceFormatted: this.newItemPrice.formatted(),
 			quantity: ko.observable(this.newItemQuantity())
 		};
-
-		console.log(this.newItemPrice.hasError);
 
 		this.itemsInCart.push(newItem);
 		this.newItemName("");

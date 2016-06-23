@@ -12,7 +12,7 @@
   <input type="text" data-bind="value: newItemName, valueUpdate: 'keyup'" />
   <br />
   <label>Unit Price: </label>
-  <input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
+  $<input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
   <br />
     <label>Quantity: </label>
     <input type="number" min="1" step="1" data-bind="value: newItemQuantity, valueUpdate: 'keyup'" />
@@ -34,21 +34,23 @@
     <tr>
      <td data-bind="text: name"></td>
      <td>
-       <p data-bind="text: quantity"> oh no </p>
+       <p data-bind="text: quantity"></p>
        <button data-bind="click: $parent.incrementUp">+</button>
        <button data-bind="click: $parent.incrementDown">-</button>
      </td>
      <td>
-        <span data-bind="text: priceFormatted"></span>
+        <span data-bind="currency: price"></span>
         <button data-bind="click: $parent.removeItem">Remove Item</button>
      </td>
     </tr>
    </tbody>
   </table>
 
+  <div data-bind="visible: priceInCart">
     <h5>Total Price of Items:</h5>
-    <p data-bind="text: priceInCart.formatted()"></p>
-
+    <p data-bind="currency: priceInCart"></p>
+  </div>
+  
   <script src="jquery-1.11.2.min.js"></script>
   <script src="knockout-3.2.0.js"></script>
   <script src="script.js"></script>
