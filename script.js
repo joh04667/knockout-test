@@ -73,4 +73,5 @@ viewModel.addNewItemEnabled = ko.pureComputed(function() {
 
 
 
+
 ko.applyBindings(viewModel);
