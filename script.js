@@ -7,31 +7,56 @@ isPositiveInteger = function(num) {
 // check if valid US dollar syntax and above zero. returns boolean
 validateCurrency = function(amount) {
   var regex = /^[0-9]\d*(?:\.\d{0,2})?$/;
-  return regex.test(amount);
+  return regex.test(amount) && amount > 0;
 };
-
-
 
 capitalizeFirst = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-ko.extenders.money = function(target) {
-	target.hasError = ko.observable;
 
+ko.extenders.money = function(target) {
+// write input as number instead of string
+	var result = ko.computed({
+		read: function() {
+			return target();
+		},
+		write: function(val) {
+			return target(parseFloat(val));
+		}
+	});
+
+// utility method to display money value in human-readable format
+	result.formatted = function() {
+		return target().toLocaleString('en-US',{style: 'currency', currency: 'USD'});
+	};
+
+	result.hasError = ko.observable();
+
+	function validate(val) {
+		result.hasError = !validateCurrency(val);
+	}
+
+	validate(target());
+	target.subscribe(validate);
+
+	return result;
 };
 
 
 var viewModel = {
 	newItemName: ko.observable(),
-	newItemPrice: ko.observable(0),
+	newItemPrice: ko.observable(0).extend({money: true}),
 	newItemQuantity: ko.observable(1),
 	addNewItem: function () {
 		var newItem = {
 			name: capitalizeFirst(this.newItemName()),
-			price: parseFloat(this.newItemPrice()),
+			price: this.newItemPrice(),
+			priceFormatted: this.newItemPrice.formatted(),
 			quantity: ko.observable(this.newItemQuantity())
 		};
+
+		console.log(this.newItemPrice.hasError);
 
 		this.itemsInCart.push(newItem);
 		this.newItemName("");
@@ -77,7 +102,7 @@ viewModel.priceInCart = ko.pureComputed(function() {
 		result += s.price * s.quantity();
 	});
 	return result;
-}, viewModel);
+}, viewModel).extend({money: true});
 
 
 
