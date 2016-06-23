@@ -1,5 +1,6 @@
 // utility functions
 
+
 isPositiveInteger = function(num) {
 	return num % 1 === 0 && num > 0;
 };
