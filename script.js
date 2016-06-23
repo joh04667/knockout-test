@@ -14,6 +14,14 @@ capitalizeFirst = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+ko.extenders.money = function(target) {
+	target.hasError = ko.observable;
+
+
+
+};
+
+
 var viewModel = {
 	newItemName: ko.observable(),
 	newItemPrice: ko.observable(0),
