@@ -26,7 +26,9 @@
      <th>Unit Price</th>
     </tr>
    </thead>
-   <tbody data-bind="foreach: itemsInCart">
+   <tbody data-bind="foreach: itemsInCart().sort(function(a, b) {
+     return a.name > b.name ? 1 : -1;
+   })">
     <tr>
      <td data-bind="text: name"></td>
      <td>

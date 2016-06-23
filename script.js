@@ -10,6 +10,10 @@ validateCurrency = function(amount) {
   return regex.test(amount) && amount > 0;
 };
 
+alphebatizeArray = function(array, key) {
+	
+};
+
 var viewModel = {
 	newItemName: ko.observable(),
 	newItemPrice: ko.observable(0),
