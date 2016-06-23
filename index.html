@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
  <head>
   <title>Shopping Cart</title>
@@ -27,12 +28,12 @@
     </tr>
    </thead>
    <tbody data-bind="foreach: itemsInCart().sort(function(a, b) {
-     return a.name > b.name ? 1 : -1;
-   })">
+     return a.name > b.name ? 1 : -1
+    })">
     <tr>
      <td data-bind="text: name"></td>
      <td>
-       <p data-bind="text: quantity"> oh no </p>
+       <p data-bind="text: quantity"></p>
        <button data-bind="click: $parent.incrementUp">+</button>
        <button data-bind="click: $parent.incrementDown">-</button>
      </td>
@@ -43,6 +44,12 @@
     </tr>
    </tbody>
   </table>
+
+  <div>
+    <h5>Total of all items:</h5>
+    <p data-bind="text: totalCartPrice"></p>
+
+  </div>
   <script src="jquery-1.11.2.min.js"></script>
   <script src="knockout-3.2.0.js"></script>
   <script src="script.js"></script>

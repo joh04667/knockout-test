@@ -14,16 +14,21 @@ capitalizeFirst = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+
+
 var viewModel = {
 	newItemName: ko.observable(),
 	newItemPrice: ko.observable(0),
 	newItemQuantity: ko.observable(1),
+
 	addNewItem: function () {
 		var newItem = {
 			name: capitalizeFirst(this.newItemName()),
-			price: this.newItemPrice(),
+			price: parseFloat(this.newItemPrice()),
 			quantity: ko.observable(this.newItemQuantity())
 		};
+
+		viewModel.totalPriceInCart += this.newItemPrice();
 
 		this.itemsInCart.push(newItem);
 		this.newItemName("");
@@ -48,18 +53,28 @@ var viewModel = {
 		viewModel.itemsInCart.remove(this);
 	},
 
-	itemsInCart: ko.observableArray([])
+	itemsInCart: ko.observableArray([]),
 
 };
 
 // TODO: move functions from viewmodel
 viewModel.addNewItemEnabled = ko.pureComputed(function() {
-	var name = this.newItemName();
-	var	price = validateCurrency(this.newItemPrice());
-	var quantity = isPositiveInteger(this.newItemQuantity());
+	var self = this;
+	var name = self.newItemName();
+	var	price = validateCurrency(self.newItemPrice());
+	var quantity = isPositiveInteger(self.newItemQuantity());
 	return name && name.length && price && quantity;
 }, viewModel);
 
+viewModel.totalCartPrice = ko.pureComputed(function() {
+	var self = this;
+	var cart = self.itemsInCart();
+	var result = 0;
+	cart.forEach(function(s) {
+			result += s.price * s.quantity();
+		});
+	return result;
+}, viewModel);
 
 
 ko.applyBindings(viewModel);
