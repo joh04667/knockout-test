@@ -1,3 +1,15 @@
+// utility functions
+
+isPositiveInteger = function(num) {
+	return num % 1 === 0 && num >= 1;
+};
+
+// check if valid US dollar syntax and above zero. returns boolean
+validateCurrency = function(amount) {
+  var regex = /^[0-9]\d*(?:\.\d{0,2})?$/;
+  return regex.test(amount) && amount > 0;
+};
+
 var viewModel = {
 	newItemName: ko.observable(),
 	newItemPrice: ko.observable(0),
@@ -36,10 +48,12 @@ var viewModel = {
 
 };
 
+// TODO: move functions from viewmodel
 viewModel.addNewItemEnabled = ko.pureComputed(function() {
-	var name = this.newItemName(),
-		price = this.newItemPrice();
-	return name && name.length;
+	var name = this.newItemName();
+	var	price = validateCurrency(this.newItemPrice());
+	var quantity = isPositiveInteger(this.newItemQuantity());
+	return name && name.length && price && quantity;
 }, viewModel);
 
 
