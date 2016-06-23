@@ -11,14 +11,13 @@ validateCurrency = function(amount) {
 };
 
 
+
 capitalizeFirst = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 ko.extenders.money = function(target) {
 	target.hasError = ko.observable;
-
-
 
 };
 
@@ -30,7 +29,7 @@ var viewModel = {
 	addNewItem: function () {
 		var newItem = {
 			name: capitalizeFirst(this.newItemName()),
-			price: this.newItemPrice(),
+			price: parseFloat(this.newItemPrice()),
 			quantity: ko.observable(this.newItemQuantity())
 		};
 
@@ -68,6 +67,16 @@ viewModel.addNewItemEnabled = ko.pureComputed(function() {
 	var	price = validateCurrency(this.newItemPrice());
 	var quantity = isPositiveInteger(this.newItemQuantity());
 	return name && name.length && price && quantity;
+}, viewModel);
+
+viewModel.priceInCart = ko.pureComputed(function() {
+	var self = this;
+	var cart = self.itemsInCart();
+	var result = 0;
+	cart.forEach(function(s) {
+		result += s.price * s.quantity();
+	});
+	return result;
 }, viewModel);
 
 
