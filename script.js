@@ -26,7 +26,7 @@ var viewModel = function() {
 	// adds new item to cart
 	vm.addNewItem = function () {
 		var newItem = {
-			name: capitalizeFirst(vm.newItemName()),
+			name: vm.newItemName(),
 			price: vm.newItemPrice(),
 			quantity: ko.observable(vm.newItemQuantity())
 		};
