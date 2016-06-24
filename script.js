@@ -1,4 +1,8 @@
+
+
 // utility functions
+
+// returns boolean if an integer and more than 0
 isPositiveInteger = function(num) {
 	return num % 1 === 0 && num > 0;
 };
@@ -9,66 +13,65 @@ validateCurrency = function(amount) {
   return regex.test(amount) && amount > 0;
 };
 
-capitalizeFirst = function(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-};
+// vm
+var viewModel = function() {
 
+	var vm = this;
+	// scope variables
+	vm.newItemName = ko.observable();
+	vm.newItemPrice = ko.observable(0).extend({readStringWriteNumber: true});
+	vm.newItemQuantity = ko.observable(1);
+	vm.itemsInCart = ko.observableArray([]);
 
-var viewModel = {
-	newItemName: ko.observable(),
-	newItemPrice: ko.observable(0).extend({readStringWriteNumber: true}),
-	newItemQuantity: ko.observable(1),
-	itemsInCart: ko.observableArray([])
+	// adds new item to cart
+	vm.addNewItem = function () {
+		var newItem = {
+			name: capitalizeFirst(vm.newItemName()),
+			price: vm.newItemPrice(),
+			quantity: ko.observable(vm.newItemQuantity())
+		};
+		vm.itemsInCart.push(newItem);
 
-};
-
-// TODO: move functions from viewmodel
-viewModel.addNewItem = function () {
-	var newItem = {
-		name: capitalizeFirst(this.newItemName()),
-		price: this.newItemPrice(),
-		quantity: ko.observable(this.newItemQuantity())
+		// reset scope variables
+		vm.newItemName("");
+		vm.newItemPrice(0);
+		vm.newItemQuantity(1);
 	};
 
-	this.itemsInCart.push(newItem);
-	this.newItemName("");
-	this.newItemPrice(0);
-	this.newItemQuantity(1);
-};
-
-viewModel.addNewItemEnabled = ko.pureComputed(function() {
-  var self = this;
-	var name = this.newItemName();
-	var	price = validateCurrency(this.newItemPrice());
-	var quantity = isPositiveInteger(this.newItemQuantity());
-	return name && name.length && price && quantity;
-}, viewModel);
-
-viewModel.priceInCart = ko.pureComputed(function() {
-	var self = this;
-	var cart = self.itemsInCart();
-	var result = 0;
-	cart.forEach(function(s) {
-		result += s.price * s.quantity();
+	// validation for form submission
+	vm.addNewItemEnabled = ko.pureComputed(function() {
+		var name = vm.newItemName();
+		var	price = validateCurrency(vm.newItemPrice());
+		var quantity = isPositiveInteger(vm.newItemQuantity());
+		return name && name.length && price && quantity;
 	});
-	return result;
-}, viewModel);
 
-viewModel.incrementUp = function() {
-	var value = this.quantity() + 1;
-	this.quantity(value);
-};
+	// computes from itemsInCart array the total cost.
+	vm.priceInCart = ko.pureComputed(function() {
+		var cart = vm.itemsInCart();
+		var result = 0;
+		cart.forEach(function(item) {
+			result += item.price * item.quantity();
+		});
+		return result;
+	});
 
-viewModel.incrementDown = function() {
-	var value = this.quantity() - 1;
-	// don't update value if decremented value is zero or lower
-	value = value ? value : this.quantity();
-	this.quantity(value);
-};
-
-viewModel.removeItem = function() {
-		viewModel.itemsInCart.remove(this);
+	vm.incrementUp = function() {
+		var value = this.quantity() + 1;
+		this.quantity(value);
 	};
 
+	vm.incrementDown = function() {
+		var value = this.quantity() - 1;
+		// don't update value if decremented value is zero or lower
+		value = value ? value : this.quantity();
+		this.quantity(value);
+	};
 
-ko.applyBindings(viewModel);
+	vm.removeItem = function() {
+			vm.itemsInCart.remove(this);
+		};
+};
+
+
+ko.applyBindings( new viewModel() );
