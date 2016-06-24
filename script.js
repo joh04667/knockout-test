@@ -1,6 +1,4 @@
 // utility functions
-
-
 isPositiveInteger = function(num) {
 	return num % 1 === 0 && num > 0;
 };
@@ -15,70 +13,29 @@ capitalizeFirst = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-// custom binding to display money in human readable format (USD)
-ko.bindingHandlers.currency = {
-	update: function(element, valueAccessor, allBindings) {
-		var value = ko.unwrap(valueAccessor());
-		value = typeof(value) === 'string' ? parseFloat(value) : value;
-		var format = value.toLocaleString('en-US',{style: 'currency', currency: 'USD'});
-		$(element).text(format);
-	}
-};
-
-// write input as number instead of string
-ko.extenders.moneyToNumber = function(target) {
-	var result = ko.computed({
-		read: function() {
-			return target();
-		},
-		write: function(val) {
-			return target(parseFloat(val));
-		}
-	});
-	return result;
-};
-
 
 var viewModel = {
 	newItemName: ko.observable(),
-	newItemPrice: ko.observable(0).extend({moneyToNumber: true}),
+	newItemPrice: ko.observable(0).extend({readStringWriteNumber: true}),
 	newItemQuantity: ko.observable(1),
-
-	addNewItem: function () {
-		var newItem = {
-			name: capitalizeFirst(this.newItemName()),
-			price: this.newItemPrice(),
-			quantity: ko.observable(this.newItemQuantity())
-		};
-
-		this.itemsInCart.push(newItem);
-		this.newItemName("");
-		this.newItemPrice(0);
-		this.newItemQuantity(1);
-	},
-
-	incrementUp: function() {
-		var value = this.quantity();
-		value++;
-		this.quantity(value);
-	},
-
-	incrementDown: function() {
-		var value = this.quantity();
-		// don't update value if decremented value is zero or lower
-		value = value - 1 ? value - 1 : value;
-		this.quantity(value);
-	},
-
-	removeItem: function() {
-		viewModel.itemsInCart.remove(this);
-	},
-
 	itemsInCart: ko.observableArray([])
 
 };
 
 // TODO: move functions from viewmodel
+viewModel.addNewItem = function () {
+	var newItem = {
+		name: capitalizeFirst(this.newItemName()),
+		price: this.newItemPrice(),
+		quantity: ko.observable(this.newItemQuantity())
+	};
+
+	this.itemsInCart.push(newItem);
+	this.newItemName("");
+	this.newItemPrice(0);
+	this.newItemQuantity(1);
+};
+
 viewModel.addNewItemEnabled = ko.pureComputed(function() {
   var self = this;
 	var name = this.newItemName();
@@ -95,10 +52,23 @@ viewModel.priceInCart = ko.pureComputed(function() {
 		result += s.price * s.quantity();
 	});
 	return result;
-}, viewModel).extend({money: true});
+}, viewModel);
 
+viewModel.incrementUp = function() {
+	var value = this.quantity() + 1;
+	this.quantity(value);
+};
 
+viewModel.incrementDown = function() {
+	var value = this.quantity() - 1;
+	// don't update value if decremented value is zero or lower
+	value = value ? value : this.quantity();
+	this.quantity(value);
+};
 
+viewModel.removeItem = function() {
+		viewModel.itemsInCart.remove(this);
+	};
 
 
 ko.applyBindings(viewModel);
