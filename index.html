@@ -6,7 +6,11 @@
   <link rel="stylesheet" href="style/style.css">
  </head>
  <body>
-  <h1>Shopping Cart</h1>
+
+  <header>
+    <h1>Shopping Cart</h1>
+  </header>
+
   <hr />
   <h3>Add New Item</h3>
   <label>Name: </label>
@@ -36,8 +40,8 @@
      <td data-bind="text: name"></td>
      <td>
        <p data-bind="text: quantity"></p>
-       <button data-bind="click: $parent.incrementUp">+</button>
-       <button data-bind="click: $parent.incrementDown">-</button>
+       <button data-bind="click: function() {quantity.incrementBy()}">+</button>
+       <button data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
      </td>
      <td>
         <span data-bind="currency: price"></span>

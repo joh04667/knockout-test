@@ -2,15 +2,17 @@
 ko.bindingHandlers.currency = {
 	update: function(element, valueAccessor) {
 		var value = ko.unwrap(valueAccessor());
-    // toLocaleString can have issues with strings, so it's better to change to number form.
+    // change to number if needed to avoid type coersion issues
 		value = typeof(value) === 'string' ? parseFloat(value) : value;
-		var format = value.toLocaleString('en-US',{style: 'currency', currency: 'USD'});
-		$(element).text(format);
+    if(isNaN(value)) {return;}
+
+		var formattedString = value.toLocaleString('en-US',{style: 'currency', currency: 'USD'});
+		$(element).text(formattedString);
 	}
 };
 
 // write input as number instead of string
-ko.extenders.readStringWriteNumber = function(target) {
+ko.extenders.writeAsNumber = function(target) {
 	var result = ko.computed({
 		read: function() {
 			return target();
@@ -23,19 +25,27 @@ ko.extenders.readStringWriteNumber = function(target) {
 };
 
 
+// places a method on the observable that will increment its value with some counting limit options
+ko.extenders.incrementer = function(target) {
+  target.incrementBy = function(step, min, max) {
+    step = step || 1;
+    min = min || 0;
+    max = max || Number.MAX_VALUE;
+
+    var newValue = target() + step;
+    newValue = newValue > min && newValue < max ? newValue : target();
+    target(newValue);
+  };
+  return target;
+};
+
+
 // sorting method to alphabetize an object array by a given property.
-// Placed on all observableArrays as it has many use cases.
 ko.observableArray.fn.alphabetizeByProperty = function(property) {
   var arr = this();
   if(!arr.length) return arr;
 
-    // search through object array to validate given property exists in all objects
-    var propertyExists = arr.every(function(obj) {
-      return obj[property];
-    });
-    if(!propertyExists) throw ("Cannot find property '" + property + "' in object array " + this.name);
-
-// the sort function will remain agnostic to capitalization and non-string data types
+// the sort function is agnostic to capitalization and non-string data types
   return arr.sort(function(first, second) {
     return lowerCaseIfString(first) > lowerCaseIfString(second) ? 1 : -1;
   });
