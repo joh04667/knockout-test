@@ -10,6 +10,7 @@ validateCurrency = function(amount) {
   return regex.test(amount) && amount > 0;
 };
 
+
 //[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]
 
 // vm
@@ -24,12 +25,14 @@ var viewModel = function() {
 
 
 	vm.addNewItem = function () {
+		// quantity needs to be observed for changes and is extended with extra functionality
 		var newItem = {
 			name: vm.newItemName(),
 			price: vm.newItemPrice(),
 			quantity: ko.observable(vm.newItemQuantity()).extend({incrementer: true})
 		};
 		vm.itemsInCart.push(newItem);
+		
 
 		// reset scope variables
 		vm.newItemName("");

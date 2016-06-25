@@ -47,7 +47,7 @@ ko.observableArray.fn.alphabetizeByProperty = function(property) {
 
 // the sort function is agnostic to capitalization and non-string data types
   return arr.sort(function(first, second) {
-    return lowerCaseIfString(first) > lowerCaseIfString(second) ? 1 : -1;
+    return lowerCaseIfString(first[property]) > lowerCaseIfString(second[property]) ? 1 : -1;
   });
 };
 

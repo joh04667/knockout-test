@@ -12,49 +12,61 @@
   </header>
 
   <hr />
-  <h3>Add New Item</h3>
-  <label>Name: </label>
-  <input type="text" data-bind="value: newItemName, valueUpdate: 'keyup'" />
-  <br />
-  <label>Unit Price: </label>
-  $<input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
-  <br />
-    <label>Quantity: </label>
-    <input type="number" min="1" step="1" data-bind="value: newItemQuantity, valueUpdate: 'keyup'" />
-  <br />
-  <button data-bind="click: addNewItem, enable: addNewItemEnabled">Add Item</button>
-  <hr />
-  <h3>Items in Cart</h3>
-  <table>
-   <thead>
-    <tr>
-     <th>Name</th>
-     <th>Quantity</th>
-     <th>Unit Price</th>
-    </tr>
-   </thead>
-   <tbody data-bind="foreach: itemsInCart.alphabetizeByProperty('name')">
+  <div class="container">
+    <div class="col-md-3 column left column-left">
+      <h3>Add New Item</h3>
+      <label>Name: </label>
+      <input type="text" data-bind="value: newItemName, valueUpdate: 'keyup'" />
+      <br />
+      <label>Unit Price: </label>
+      $<input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
+      <br />
+        <label>Quantity: </label>
+        <input type="number" min="1" step="1" data-bind="value: newItemQuantity, valueUpdate: 'keyup'" />
+      <br />
+      <button data-bind="click: addNewItem, enable: addNewItemEnabled">Add Item</button>
+
+      <div data-bind="visible: priceInCart">
+        <h5>Total Price of Items:</h5>
+        <p data-bind="currency: priceInCart"></p>
+      </div>
+
+    </div> <!--left column-->
+
+  <div class="col-md-9 column right column-right">
+    <h3>Items in Cart</h3>
+    <table>
+     <thead>
+      <tr>
+       <th>Name</th>
+       <th>Quantity</th>
+       <th>Unit Price</th>
+      </tr>
+     </thead>
+     <tbody data-bind="foreach: itemsInCart.alphabetizeByProperty('name')">
 
 
-    <tr>
-     <td data-bind="text: name"></td>
-     <td>
-       <p data-bind="text: quantity"></p>
-       <button data-bind="click: function() {quantity.incrementBy()}">+</button>
-       <button data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
-     </td>
-     <td>
-        <span data-bind="currency: price"></span>
-        <button data-bind="click: $parent.removeItem">Remove Item</button>
-     </td>
-    </tr>
-   </tbody>
-  </table>
+      <tr>
+       <td data-bind="text: name"></td>
+       <td>
+         <p data-bind="text: quantity"></p>
+         <button data-bind="click: function() {quantity.incrementBy()}">+</button>
+         <button data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
+       </td>
+       <td>
+          <span data-bind="currency: price"></span>
+          <button data-bind="click: $parent.removeItem">Remove Item</button>
+       </td>
+      </tr>
+     </tbody>
+    </table>
 
-  <div data-bind="visible: priceInCart">
-    <h5>Total Price of Items:</h5>
-    <p data-bind="currency: priceInCart"></p>
-  </div>
+  </div> <!--right column-->
+  <div class="clearfix"></div>
+
+
+</div>
+
 
   <script src="jquery-1.11.2.min.js"></script>
   <script src="knockout-3.2.0.js"></script>
