@@ -35,6 +35,20 @@
 
   <div class="col-md-9 column right column-right">
     <h3>Items in Cart</h3>
+
+
+    <div> <!-- foreach -->
+      <div class="grocery-item"> <!--outer holder -->
+        <p class="left">test</p>
+        <span>name</span>
+        <span>quantity</span>
+        <span>price</span>
+
+      </div>
+    </div>
+
+
+
     <table>
      <thead>
       <tr>
@@ -43,9 +57,8 @@
        <th>Unit Price</th>
       </tr>
      </thead>
+
      <tbody data-bind="foreach: itemsInCart.alphabetizeByProperty('name')">
-
-
       <tr>
        <td data-bind="text: name"></td>
        <td>
