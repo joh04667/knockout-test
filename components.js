@@ -1,4 +1,4 @@
-// display money in human readable format string (USD)
+// binding to display money in human readable format string (USD)
 ko.bindingHandlers.currency = {
 	update: function(element, valueAccessor) {
 		var value = ko.unwrap(valueAccessor());
@@ -10,6 +10,8 @@ ko.bindingHandlers.currency = {
 		$(element).text(formattedString);
 	}
 };
+
+
 
 // write input as number instead of string
 ko.extenders.writeAsNumber = function(target) {
@@ -40,6 +42,7 @@ ko.extenders.incrementer = function(target) {
 };
 
 
+
 // sorting method to alphabetize an object array by a given property.
 ko.observableArray.fn.alphabetizeByProperty = function(property) {
   var arr = this();
@@ -51,7 +54,43 @@ ko.observableArray.fn.alphabetizeByProperty = function(property) {
   });
 };
 
-
 function lowerCaseIfString(val) {
   return (typeof(val) === 'string') ? val.toLowerCase() : val;
 }
+
+
+
+// Will push a new object to the observable array. If the object exists (specified by searchKey) the third parameter keys are added.
+ko.observableArray.fn.addOrCombineObject = function(newItem, searchKey, keyToCombine) {
+  var newCompareValue = lowerCaseIfString(ko.unwrap(newItem[searchKey])),
+      newValue = ko.unwrap(newItem[keyToCombine]),
+      isDuplicate = false;
+
+  // Function will update both numerical and observable values.
+  ko.utils.arrayForEach(this(), function(item, index) {
+    if(lowerCaseIfString(item[searchKey]) === newCompareValue) {
+      var currentValue = lowerCaseIfString(item[keyToCombine]);
+      ko.isObservable(currentValue) ? currentValue(currentValue() + newValue) : currentValue += newValue;
+      isDuplicate = true;
+    }
+  });
+
+  if(!isDuplicate) {this.push(newItem);}
+
+  return isDuplicate;
+};
+
+
+ko.bindingHandlers.logger = {
+       update: function(element, valueAccessor, allBindings) {
+           //store a counter with this element
+           var count = ko.utils.domData.get(element, "_ko_logger") || 0,
+               data = ko.toJS(valueAccessor() || allBindings());
+
+           ko.utils.domData.set(element, "_ko_logger", ++count);
+
+           if (window.console && console.log) {
+               console.log(count, element, data);
+           }
+       }
+   };

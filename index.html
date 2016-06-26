@@ -13,13 +13,13 @@
 
   <hr />
   <div class="container">
-    <div class="col-md-3 column left column-left">
+    <div class="col-sm-3 column left column-left">
       <h3>Add New Item</h3>
       <label>Name: </label>
       <input type="text" data-bind="value: newItemName, valueUpdate: 'keyup'" />
       <br />
       <label>Unit Price: </label>
-      $<input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
+      <span>$</span><input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
       <br />
         <label>Quantity: </label>
         <input type="number" min="1" step="1" data-bind="value: newItemQuantity, valueUpdate: 'keyup'" />
@@ -33,46 +33,28 @@
 
     </div> <!--left column-->
 
-  <div class="col-md-9 column right column-right">
+  <div class="col-sm-9 column right column-right">
     <h3>Items in Cart</h3>
 
 
-    <div> <!-- foreach -->
+    <div data-bind="foreach: itemsInCart.alphabetizeByProperty('name')"> <!-- foreach -->
       <div class="grocery-item"> <!--outer holder -->
-        <p class="left">test</p>
-        <span>name</span>
-        <span>quantity</span>
-        <span>price</span>
+        <div class="item-display">
 
+        <p class="left" data-bind="text: name"></p>
+        <div class="quantity">
+          <span data-bind="text: quantity"></span>
+          <button data-bind="click: function() {quantity.incrementBy()}">+</button>
+          <button data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
+        </div>
+
+        <button class="right btn btn-danger" data-bind="click: $parent.removeItem">Remove Item</button>
+        <span class="right" data-bind="currency: price"></span>
+       </div>
       </div>
     </div>
 
 
-
-    <table>
-     <thead>
-      <tr>
-       <th>Name</th>
-       <th>Quantity</th>
-       <th>Unit Price</th>
-      </tr>
-     </thead>
-
-     <tbody data-bind="foreach: itemsInCart.alphabetizeByProperty('name')">
-      <tr>
-       <td data-bind="text: name"></td>
-       <td>
-         <p data-bind="text: quantity"></p>
-         <button data-bind="click: function() {quantity.incrementBy()}">+</button>
-         <button data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
-       </td>
-       <td>
-          <span data-bind="currency: price"></span>
-          <button data-bind="click: $parent.removeItem">Remove Item</button>
-       </td>
-      </tr>
-     </tbody>
-    </table>
 
   </div> <!--right column-->
   <div class="clearfix"></div>

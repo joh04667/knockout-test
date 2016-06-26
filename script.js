@@ -11,7 +11,6 @@ validateCurrency = function(amount) {
 };
 
 
-//[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]
 
 // vm
 var viewModel = function() {
@@ -31,8 +30,8 @@ var viewModel = function() {
 			price: vm.newItemPrice(),
 			quantity: ko.observable(vm.newItemQuantity()).extend({incrementer: true})
 		};
-		vm.itemsInCart.push(newItem);
-		
+		vm.itemsInCart.addOrCombineObject(newItem, 'name', 'quantity');
+
 
 		// reset scope variables
 		vm.newItemName("");
@@ -58,10 +57,12 @@ var viewModel = function() {
 		return result;
 	});
 
+
 	vm.removeItem = function() {
 			vm.itemsInCart.remove(this);
 		};
 };
+
 
 
 ko.applyBindings( new viewModel() );
