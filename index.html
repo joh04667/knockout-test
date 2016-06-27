@@ -38,6 +38,8 @@
 
       <input class="button btn btn-submit" type="submit" value="Add Item" data-bind="click: addNewItem, enable: addNewItemEnabled">
 </form>
+  <div class="duplicate">
+  </div>
       <div class="box-bottom" data-bind="visible: priceInCart">
         <h5>Total Price of Items:</h5>
         <h4 data-bind="currency: priceInCart, updateFlash: priceInCart"></h4>

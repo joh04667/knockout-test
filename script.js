@@ -1,3 +1,5 @@
+// [[[[[[[[[ See components.js for extenders and bindings ]]]]]]]]]
+
 // utility functions
 
 isPositiveInteger = function(num) {
@@ -19,7 +21,7 @@ var viewModel = function() {
 	var vm = this;
 	// scope variables
 	vm.newItemName = ko.observable().extend({validator: function(obj) {return obj;}});
-	vm.newItemPrice = ko.observable().extend({writeAsNumber: 'currency', default: 0, validator: validateCurrency});
+	vm.newItemPrice = ko.observable().extend({writeAsNumber: 'currency', default: 1, validator: validateCurrency});
 	vm.newItemQuantity = ko.observable().extend({ writeAsNumber: true, default: 1, validator: isPositiveInteger });
 	vm.itemsInCart = ko.observableArray([]);
 
@@ -31,7 +33,16 @@ var viewModel = function() {
 			price: vm.newItemPrice(),
 			quantity: ko.observable(vm.newItemQuantity()).extend({incrementer: true})
 		};
-		vm.itemsInCart.addOrCombineObject(newItem, 'name', 'quantity');
+		var duplicate = vm.itemsInCart.addOrCombineObject(newItem, 'name', 'quantity');
+		
+		if(duplicate) {
+			window.clearTimeout(timeout);
+			$('.duplicate').empty();
+			$('.duplicate').append('<p>Item already exists.</p><p>We\'ve added the quantity to the list for you.</p>');
+			var timeout = window.setTimeout(function() {
+			$('.duplicate').children().fadeOut();
+		}, 3000);
+		}
 
 
 		// reset scope variables
@@ -41,7 +52,7 @@ var viewModel = function() {
 	};
 
 
-	vm.addNewItemEnabled = ko.computed(function() {
+	vm.addNewItemEnabled = ko.pureComputed(function() {
 		var name = vm.newItemName();
 		var	price = validateCurrency(vm.newItemPrice());
 		var quantity = isPositiveInteger(vm.newItemQuantity());

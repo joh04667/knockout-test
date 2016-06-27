@@ -191,19 +191,11 @@ h4 {
   width: 150px;
 }
 
-input:valid ~ .invalid {
-  color: red;
+.duplicate {
+  color: #fafafa;
+  font-size: 14px;
+  text-align: center;
 }
-
-input:focus ~ .invalid {
-  color:inherit;
-}
-
-.invalid:before, .invalid:after {
-  background: red;
-  color: red;
-}
-
 
 
 
@@ -271,6 +263,19 @@ label          {
 /* active state */
 input:focus ~ .bar:before, input:focus ~ .bar:after {
   width:50%;
+}
+
+input:valid ~ .invalid {
+  color: red;
+}
+
+input:focus ~ .invalid {
+  color:inherit;
+}
+
+.invalid:before, .invalid:after {
+  background: red;
+  color: red;
 }
 
 
