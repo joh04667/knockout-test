@@ -15,17 +15,29 @@
   <div class="container">
     <div class="col-sm-3 column left column-left">
       <h3>Add New Item</h3>
-      <label>Name: </label>
-      <input type="text" data-bind="value: newItemName, valueUpdate: 'keyup'" />
+      <form>
+      <div class="group">
+        <input type="text" data-bind="value: newItemName, valueUpdate: 'keyup', event: { focus: newItemName.defaultIfEmpty}" required/>
+        <span class="bar" data-bind="css: {invalid: newItemName.isValid}"></span>
+        <label data-bind="css: {invalid: newItemName.isValid}">Name</label>
+      </div>
       <br />
-      <label>Unit Price: </label>
-      <span>$</span><input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup'"  />
-      <br />
-        <label>Quantity: </label>
-        <input type="number" min="1" step="1" data-bind="value: newItemQuantity, valueUpdate: 'keyup'" />
-      <br />
-      <button data-bind="click: addNewItem, enable: addNewItemEnabled">Add Item</button>
+      <div class="group number-input left">
+        <input type="number" min="0" step="0.25" data-bind="value: newItemPrice, valueUpdate: 'keyup', event: { focus: newItemPrice.defaultIfEmpty}" required/>
+        <span class="dollar-input" data-bind="if: newItemPrice">$</span>
+        <span class="bar" data-bind="css: {invalid: newItemPrice.isValid}"></span>
+        <label data-bind="css: {invalid: newItemPrice.isValid}">Unit Price</label>
+      </div>
 
+
+        <div class="group number-input right">
+          <input type="number" min="1" step="1" data-bind="value: newItemQuantity, valueUpdate: 'keyup', event: { focus: newItemQuantity.defaultIfEmpty}" required/>
+          <span class="bar" data-bind="css: {invalid: newItemQuantity.isValid}"></span>
+          <label data-bind="css: {invalid: newItemQuantity.isValid}">Quantity</label>
+        </div>
+
+      <input class="button btn btn-submit" type="submit" value="Add Item" data-bind="click: addNewItem, enable: addNewItemEnabled">
+</form>
       <div data-bind="visible: priceInCart">
         <h5>Total Price of Items:</h5>
         <p data-bind="currency: priceInCart"></p>
@@ -43,13 +55,14 @@
 
         <p class="left" data-bind="text: name"></p>
         <div class="quantity">
-          <span data-bind="text: quantity"></span>
-          <button data-bind="click: function() {quantity.incrementBy()}">+</button>
-          <button data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
+          <p>Quantity:</p>
+            <button class="btn btn-danger btn-number ticker" data-bind="click: function() {quantity.incrementBy(-1)}">-</button>
+            <span data-bind="text: quantity"></span>
+            <button class="btn btn-success btn-number ticker" data-bind="click: function() {quantity.incrementBy()}">+</button>
         </div>
 
         <button class="right btn btn-danger" data-bind="click: $parent.removeItem">Remove Item</button>
-        <span class="right" data-bind="currency: price"></span>
+        <span class="right price" data-bind="currency: price"></span>
        </div>
       </div>
     </div>

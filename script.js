@@ -6,8 +6,9 @@ isPositiveInteger = function(num) {
 
 // check if valid US money syntax and above zero.
 validateCurrency = function(amount) {
+	if(!amount && amount !== 0) {return false;}
   var regex = /^[0-9]\d*(?:\.\d{0,2})?$/;
-  return regex.test(amount) && amount > 0;
+  return regex.test(amount.toString()) && amount > 0;
 };
 
 
@@ -17,9 +18,9 @@ var viewModel = function() {
 
 	var vm = this;
 	// scope variables
-	vm.newItemName = ko.observable();
-	vm.newItemPrice = ko.observable(0).extend({writeAsNumber: true});
-	vm.newItemQuantity = ko.observable(1).extend({writeAsNumber: true});
+	vm.newItemName = ko.observable().extend({validator: function(obj) {return obj;}});
+	vm.newItemPrice = ko.observable().extend({writeAsNumber: 'currency', default: 0, validator: validateCurrency});
+	vm.newItemQuantity = ko.observable().extend({ writeAsNumber: true, default: 1, validator: isPositiveInteger });
 	vm.itemsInCart = ko.observableArray([]);
 
 
@@ -35,8 +36,8 @@ var viewModel = function() {
 
 		// reset scope variables
 		vm.newItemName("");
-		vm.newItemPrice(0);
-		vm.newItemQuantity(1);
+		vm.newItemPrice(undefined);
+		vm.newItemQuantity(undefined);
 	};
 
 

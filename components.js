@@ -12,18 +12,41 @@ ko.bindingHandlers.currency = {
 };
 
 
-
 // write input as number instead of string
-ko.extenders.writeAsNumber = function(target) {
+ko.extenders.writeAsNumber = function(target, option) {
+  var currency = option === 'currency';
+
 	var result = ko.computed({
+    // Number can optionally be read as currency
 		read: function() {
-			return target();
+      var trueIfZero = typeof(target()) === 'number' && !isNaN(target());
+			return currency && trueIfZero ? target().toFixed(2) : target();
+      // return target();
 		},
 		write: function(val) {
 			return target(parseFloat(val));
 		}
 	});
+
+
 	return result;
+};
+
+// Allows a default value to be saved for observables. defaultIfEmpty will update to the default if observable is undefined
+ko.extenders.default = function(target, option) {
+  target.defaultIfEmpty = function() {
+    if(!target() && target() !== option) {
+      target(option);
+    }
+  };
+  return target;
+};
+
+// Extender will take a function as an option to evaluate if the observable is valid
+ko.extenders.validator = function(target, option) {
+	target.isValid = ko.computed(function() {
+		return !option(target());
+	});
 };
 
 
@@ -79,18 +102,3 @@ ko.observableArray.fn.addOrCombineObject = function(newItem, searchKey, keyToCom
 
   return isDuplicate;
 };
-
-
-ko.bindingHandlers.logger = {
-       update: function(element, valueAccessor, allBindings) {
-           //store a counter with this element
-           var count = ko.utils.domData.get(element, "_ko_logger") || 0,
-               data = ko.toJS(valueAccessor() || allBindings());
-
-           ko.utils.domData.set(element, "_ko_logger", ++count);
-
-           if (window.console && console.log) {
-               console.log(count, element, data);
-           }
-       }
-   };
