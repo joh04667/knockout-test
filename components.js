@@ -11,6 +11,20 @@ ko.bindingHandlers.currency = {
 	}
 };
 
+// Simple animation handler for flashing text on updates.
+ko.bindingHandlers.updateFlash = {
+	update: function(element, valueAccessor) {
+		var subscribe = ko.unwrap(valueAccessor());
+		$(element).css('animation', 'update-flash .2s ease');
+	},
+	init: function(element,valueAccessor) {
+		$(element).bind('webkitAnimationEnd', function(){
+			$(element).css('animation', 'none');
+		});
+	}
+
+
+};
 
 // write input as number instead of string
 ko.extenders.writeAsNumber = function(target, option) {

@@ -41,7 +41,7 @@ var viewModel = function() {
 	};
 
 
-	vm.addNewItemEnabled = ko.pureComputed(function() {
+	vm.addNewItemEnabled = ko.computed(function() {
 		var name = vm.newItemName();
 		var	price = validateCurrency(vm.newItemPrice());
 		var quantity = isPositiveInteger(vm.newItemQuantity());
@@ -57,7 +57,6 @@ var viewModel = function() {
 		});
 		return result;
 	});
-
 
 	vm.removeItem = function() {
 			vm.itemsInCart.remove(this);
